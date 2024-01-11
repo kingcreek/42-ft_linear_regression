@@ -1,11 +1,13 @@
 # 42-ft_linear_regression
  
-install:
+# INSTALL
 
-pip3 install -r requirements.txt
+`pip3 install -r requirements.txt`
 
-How to use:
+# How to use:
 
-python3 training.py
+1: `python3 training.py`
 
-python3 predict.py 
+2: `python3 predict.py`
+
+3: `python3 precision.py`
