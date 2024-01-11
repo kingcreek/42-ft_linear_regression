@@ -22,28 +22,42 @@ def update_thetas(theta0, theta1, learning_rate, normalized_mileage, normalized_
 
 	return theta0, theta1
 
-def load_data_from_csv(file_path):
-	mileage = []
-	prices = []
-	
-	if not os.path.exists(file_path):
-		print("There is no data.csv file. Please add one to the same directory as " + sys.argv[0])
-		sys.exit()
+def normalize_elem(value, min_value, max_value):
+	return (value - min_value) / (max_value - min_value)
 
-	with open(file_path, 'r') as file:
-		reader = csv.DictReader(file)
-		for row in reader:
-			try:
-				mileage.append(float(row['km']))
-				prices.append(float(row['price']))
-			except ValueError:
-				pass
+def draw_plot(mileage, prices, theta0, theta1, mileage_min, mileage_max, prices_min, prices_max, iteration, normalized_prices):
+	plt.clf()
+	# Plot 2D graph
+	plt.subplot(121)
+	plt.scatter(mileage, prices, color='blue', label='Data points')
+	plt.plot(mileage, [estimate_price(x, theta0, theta1, mileage_min, mileage_max, prices_min, prices_max) for x in mileage], color='red', label='Regression line')
+	plt.xlabel('Mileage')
+	plt.ylabel('Price')
+	plt.title(f'Linear Regression - Iteration {iteration + 1}')
+	plt.legend()
 
-	return mileage, prices
+	# Plot 3D graph
+	plt.subplot(122, projection='3d')
+	plt.scatter(mileage, prices, 0.5, color='blue', label='Data points')
+	# plt.plot(mileage, [estimate_price(x, theta0, theta1, mileage_min, mileage_max, prices_min, prices_max) for x in mileage], [normalize_elem(x, prices_min, prices_max) for x in prices], color='red', label='Regression line')
+	plt.xlabel('Mileage')
+	plt.ylabel('Price')
+	plt.title(f'Linear Regression - Iteration {iteration + 1}')
+	plt.legend()
+	# # Show prices
+	# plt.scatter(mileage, prices, color='blue', label='Data points')
+	# # Show normalized estimation
+	# plt.plot(mileage, [estimate_price(x, theta0, theta1, mileage_min, mileage_max, prices_min, prices_max) for x in mileage], color='red', label='Regression line')
+	# plt.xlabel('Mileage')
+	# plt.ylabel('Price')
+	# plt.title(f'Linear Regression - Iteration {iteration + 1}')
+	# plt.legend()
+	plt.draw()
+	plt.pause(0.01)
 
 def train_and_plot(mileage, prices, learning_rate, iterations):
 
-	update_interval = 30
+	update_interval = 50
 
 	# Normalize data
 	normalized_mileage, mileage_min, mileage_max = normalize_data(mileage)
@@ -57,17 +71,7 @@ def train_and_plot(mileage, prices, learning_rate, iterations):
 
 		# Plot updated regression line every update_interval iterations
 		if iteration % update_interval == 0 or iteration == iterations - 1 or iteration == 0:
-			plt.clf()
-			# Show prices
-			plt.scatter(mileage, prices, color='blue', label='Data points')
-			# Show normalized estimation
-			plt.plot(mileage, [estimate_price(x, theta0, theta1, mileage_min, mileage_max, prices_min, prices_max) for x in mileage], color='red', label='Regression line')
-			plt.xlabel('Mileage')
-			plt.ylabel('Price')
-			plt.title(f'Linear Regression - Iteration {iteration + 1}')
-			plt.legend()
-			plt.draw()
-			plt.pause(0.01)
+			draw_plot(mileage, prices, theta0, theta1, mileage_min, mileage_max, prices_min, prices_max, iteration, normalized_prices)
 
 	plt.ioff()  # Disable interactive mode
 

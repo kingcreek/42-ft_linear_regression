@@ -19,10 +19,10 @@ def main():
 	if mileage > 3039122 :
 		print("You should check for a smaller mileage, no car in the world has been on the road that much !")
 		sys.exit()
-	norm_mileage = (mileage - min(mileages))/(max(mileages)-min(mileages))
-	theta0, theta1 = get_tethas()
-	norm_price = theta1 * norm_mileage + theta0
-	estimated_price = norm_price * (max(prices)-min(prices)) + min(prices)
+	norm_mileage = (mileage - min(mileages)) / (max(mileages) - min(mileages))
+	theta0, theta1 = get_thetas()
+	norm_price = theta0 + (theta1 * norm_mileage)
+	estimated_price = norm_price * (max(prices) - min(prices)) + min(prices)
 	print ("This car is worth " + str(estimated_price) + "$")
 
 if __name__ == "__main__":
