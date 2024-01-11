@@ -26,7 +26,7 @@ def main():
 	learning_rate = 0.2
 	iterations = 1000
 
-	theta0, theta1 = get_tethas()
+	theta0, theta1 = get_thetas()
 	
 	mileage_min, mileage_max = get_max_min(mileage)
 	prices_min, prices_max = get_max_min(prices)

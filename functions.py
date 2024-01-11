@@ -38,7 +38,7 @@ def load_data_from_csv(file_path):
 
 	return mileage, prices
 
-def get_tethas():
+def get_thetas():
 	if os.path.exists('thetas.txt'):
 		with open('thetas.txt') as f:
 			theta0 = float(f.readline())
