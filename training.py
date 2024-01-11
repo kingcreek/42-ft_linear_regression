@@ -3,6 +3,7 @@
 import csv
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.tri import Triangulation
 from functions import *
 
 def update_thetas(theta0, theta1, learning_rate, normalized_mileage, normalized_prices):
@@ -22,11 +23,9 @@ def update_thetas(theta0, theta1, learning_rate, normalized_mileage, normalized_
 
 	return theta0, theta1
 
-def normalize_elem(value, min_value, max_value):
-	return (value - min_value) / (max_value - min_value)
-
 def draw_plot(mileage, prices, theta0, theta1, mileage_min, mileage_max, prices_min, prices_max, iteration, normalized_prices):
 	plt.clf()
+
 	# Plot 2D graph
 	plt.subplot(121)
 	plt.scatter(mileage, prices, color='blue', label='Data points')
@@ -37,27 +36,26 @@ def draw_plot(mileage, prices, theta0, theta1, mileage_min, mileage_max, prices_
 	plt.legend()
 
 	# Plot 3D graph
-	plt.subplot(122, projection='3d')
-	plt.scatter(mileage, prices, 0.5, color='blue', label='Data points')
-	# plt.plot(mileage, [estimate_price(x, theta0, theta1, mileage_min, mileage_max, prices_min, prices_max) for x in mileage], [normalize_elem(x, prices_min, prices_max) for x in prices], color='red', label='Regression line')
-	plt.xlabel('Mileage')
-	plt.ylabel('Price')
-	plt.title(f'Linear Regression - Iteration {iteration + 1}')
-	plt.legend()
-	# # Show prices
-	# plt.scatter(mileage, prices, color='blue', label='Data points')
-	# # Show normalized estimation
-	# plt.plot(mileage, [estimate_price(x, theta0, theta1, mileage_min, mileage_max, prices_min, prices_max) for x in mileage], color='red', label='Regression line')
-	# plt.xlabel('Mileage')
-	# plt.ylabel('Price')
-	# plt.title(f'Linear Regression - Iteration {iteration + 1}')
-	# plt.legend()
+	ax = plt.subplot(122, projection='3d')
+	ax.scatter(mileage, normalized_prices, prices, color='blue')
+	mileage_line = np.linspace(min(mileage), max(mileage), 100)
+	prices_line = np.array([estimate_price(x, theta0, theta1, mileage_min, mileage_max, prices_min, prices_max) for x in mileage_line])
+	normalized_prices_line = (prices_line - prices_min) / (prices_max - prices_min)
+	ax.plot(mileage_line, normalized_prices_line, prices_line, color='red', label='Regression line')
+
+	ax.set_xlabel('Mileage')
+	ax.set_ylabel('')
+	ax.set_yticks([])
+	ax.set_zlabel('Price')
+	ax.set_title(f'Linear Regression - Iteration {iteration + 1}')
+
 	plt.draw()
 	plt.pause(0.01)
 
+
 def train_and_plot(mileage, prices, learning_rate, iterations):
 
-	update_interval = 50
+	update_interval = 30
 
 	# Normalize data
 	normalized_mileage, mileage_min, mileage_max = normalize_data(mileage)
